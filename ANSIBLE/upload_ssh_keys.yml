@@ -1,0 +1,29 @@
+---
+
+- name: Exchange ssh keys
+  hosts: localhost
+  connection: local
+
+  vars:
+    user_set_pubkey: oracle
+    public_keys:
+      - id_rsa_USER1.pub
+      - id_rsa_USER2.pub
+    inventory_home: "/home/ansible/inventories"
+
+
+  tasks:
+  - name: create list of hosts
+    shell: "cat /etc/hosts  |awk '{print $2}' |grep -v db |grep -v ans |grep tcqa"
+    register: list_hosts
+
+  - name: Set authorized key taken from file
+    become: true
+    authorized_key:
+      user: "{{ user_set_pubkey }}"
+      state: present
+      key: "{{ lookup('file', '{{ inventory_home }}/files/{{ item.1 }}') }}"
+    delegate_to: "{{ item.0 }}"
+    with_nested:
+      - "{{ list_hosts.stdout_lines }}"
+      - "{{ public_keys }}"
