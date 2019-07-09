@@ -14,21 +14,26 @@ If you don't have these 2 keys, please ask to the AWS administrator to generate 
 1. You need to install 3 additional packages to use aws module on ansible: boto boto3  botocore  
     Use pip to do it with the following command: **pip install boto boto3 botocore**  
 2. Create a file on your home user (**~/.aws/credentials**) with the following content:  
-```console
+
+```
 [default]  
 aws_access_key_id: XXXXXXXXXXXXXXXXX  
-aws_secret_access_key: YYYYYYYYYYYYYYYYYYYY     ```
+aws_secret_access_key: YYYYYYYYYYYYYYYYYYYY
+```  
+
 3. Create a file on your home user (**~/test-boto.py**) with the following content:
-```console
+```
 #!/usr/bin/python3
 # A simple program to test boto and print s3 bucket names
 import boto3
 t = boto3.resource('s3')
 for b in t.buckets.all():
-    print(b.name)```  
+    print(b.name)
+```  
+    
 4. Execute this simple script just to test if the connection to AWS is successfull: **python test-boto.py**  
    If your key is invalid or if you dont reach AWS, you will get an exception like below:  
-```console  
+```  
 [mabreu@ansible ~]$ python test-boto.py 
 Traceback (most recent call last):
   File "test-boto.py", line 5, in <module>
@@ -41,7 +46,9 @@ Traceback (most recent call last):
     return self._make_api_call(operation_name, kwargs)
   File "/home/mabreu/.local/lib/python2.7/site-packages/botocore/client.py", line 661, in _make_api_call
     raise error_class(parsed_response, operation_name)
-botocore.exceptions.ClientError: An error occurred (InvalidAccessKeyId) when calling the ListBuckets operation: The AWS Access Key Id you provided does not exist in our records. ```   
+botocore.exceptions.ClientError: An error occurred (InvalidAccessKeyId) when calling the ListBuckets operation: The AWS Access Key Id you provided does not exist in our records.  
+```  
+
    If your connection is successfull, you might not get any result from the previous command execution and you are now able to run playbooks.  
    
 
